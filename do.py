@@ -22,7 +22,7 @@ def check_for_bluetooth():
         if 'bluetoothd' in output:
             print("Bluetooth is running")  # LOG
             put_request({'alert': 'select'})
-            sleep(1)  #  API CALLS FOR 1 GROUP REQUEST PER SEC MAX - RESET ALERT TO NONE
+            sleep(1.5)  #  PAUSE FOR SLOW BRIDGE PERFORMANCE
             put_request({'alert': 'none'})
             return True
         else:
@@ -107,21 +107,21 @@ def adjust_lights():
 def arrived_home():
     adjust_lights()
     print("Arrived home... sleeping")  # LOG
-    sleep(10)  #  REMINDER TO CHANGE THIS BACK
+    sleep(180)  #  REMINDER TO CHANGE THIS BACK
 
 
 def home():
     adjust_lights()
     print("Home... sleeping")  # LOG
-    sleep(10)  #  REMINDER TO CHANGE THIS BACK
+    sleep(180)  #  REMINDER TO CHANGE THIS BACK
 
 
 def left():
     put_request({'on': False})
     print("Left... sleeping")  # LOG
-    sleep(10)  #  REMINDER TO CHANGE THIS BACK
+    sleep(17)  #  REMINDER TO CHANGE THIS BACK
 
 
 def gone():
     print("Gone... sleeping")  # LOG
-    sleep(10)  #  REMINDER TO CHANGE THIS BACK
+    sleep(17)  #  REMINDER TO CHANGE THIS BACK
