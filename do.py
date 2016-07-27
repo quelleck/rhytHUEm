@@ -3,6 +3,7 @@ import subprocess
 import re
 from time import sleep
 import datetime
+from pysolar.solar import *
 import requests
 import json
 import pysolar
