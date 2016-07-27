@@ -110,7 +110,7 @@ def arrived_home():
     sleep(180)
 
 
-def home(temp):
+def home():
     adjust_lights()
     print("Home... sleeping")  # LOG
     sleep(180)
