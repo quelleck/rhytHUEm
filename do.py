@@ -107,21 +107,21 @@ def adjust_lights():
 def arrived_home():
     adjust_lights()
     print("Arrived home... sleeping")  # LOG
-    sleep(180)
+    sleep(10)  #  REMINDER TO CHANGE THIS BACK
 
 
 def home():
     adjust_lights()
     print("Home... sleeping")  # LOG
-    sleep(180)
+    sleep(10)  #  REMINDER TO CHANGE THIS BACK
 
 
 def left():
     put_request({'on': False})
     print("Left... sleeping")  # LOG
-    sleep(17)
+    sleep(10)  #  REMINDER TO CHANGE THIS BACK
 
 
 def gone():
     print("Gone... sleeping")  # LOG
-    sleep(17)
+    sleep(10)  #  REMINDER TO CHANGE THIS BACK
