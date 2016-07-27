@@ -21,7 +21,7 @@ def check_for_bluetooth():
         output = output.decode("utf-8")
         if 'bluetoothd' in output:
             print("Bluetooth is running")  # LOG
-            put_request({"success":{'on': True, 'bri': 40, 'ct':100}})
+            put_request({"success":{'on': False}})
             return True
         else:
             print("Bluetooth is not running... waiting")  # LOG
