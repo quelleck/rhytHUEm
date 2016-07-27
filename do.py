@@ -22,6 +22,8 @@ def check_for_bluetooth():
         if 'bluetoothd' in output:
             print("Bluetooth is running")  # LOG
             put_request({'alert': 'select'})
+            sleep(1)  #  API CALLS FOR 1 GROUP REQUEST PER SEC MAX - RESET ALERT TO NONE
+            put_request({'alert': 'none'})
             return True
         else:
             print("Bluetooth is not running... waiting")  # LOG
