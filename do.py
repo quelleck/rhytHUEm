@@ -72,14 +72,8 @@ def sun_status():
     print("Sun is {} degrees above/below the horizon".format(altitude))
     if altitude <= -18:
         temp = 500
-    elif altitude >= -18 and altitude < -13:
-        temp = 430
-    elif altitude >= -13 and altitude < -10:
-        temp = 400
-    elif altitude >= -10 and altitude < -7:
-        temp = 370
-    elif altitude >= -7 and altitude < -5:
-        temp = 350
+    elif altitude >= -18 and altitude < -5:
+        temp = 500
     elif altitude >= -5 and altitude < -2:
         temp = 320
     elif altitude >= -2 and altitude < 0:
