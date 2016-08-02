@@ -6,17 +6,23 @@ import datetime
 from pysolar.solar import *
 import requests
 import json
-import pysolar
+import logging
+
+
+logging.basicConfig(#filename='rhythm.log',
+                    level=logging.DEBUG,
+                    format='%(asctime)s %(message)s',
+                    datefmt='%m/%d/%Y %I:%M:%S %p')
 
 
 def initial_wait():
-    print("sleeping 25")
+    logging.warning('Sleeping 25 seconds for system boot')
     sleep(25)
     
 
 def bridge_ip():
     meethue_page = requests.get('https://www.meethue.com/api/nupnp').json()
-    print("Bridge IP: {}".format(meethue_page[0]['internalipaddress']))  # LOG
+    logging.debug("Bridge IP: {}".format(meethue_page[0]['internalipaddress']))
     return meethue_page[0]['internalipaddress']
 
 bridge_ip = bridge_ip()
@@ -27,13 +33,13 @@ def check_for_bluetooth():
         output = subprocess.check_output(['ps', '-A'])
         output = output.decode("utf-8")
         if 'bluetoothd' in output:
-            print("Bluetooth is running")  # LOG
+            logging.debug("Bluetooth is running")
             put_request({'alert': 'select'})
             sleep(1.5)  #  PAUSE FOR SLOW BRIDGE PERFORMANCE
             put_request({'alert': 'none'})
             return True
         else:
-            print("Bluetooth is not running... waiting")  # LOG
+            logging.warning("Bluetooth is not running... waiting")  # LOG
             return False
 
 
@@ -41,7 +47,6 @@ def put_request(value):
     r = requests.put('http://{}/api/{}/groups/{}/action'.format(
         bridge_ip, config.hue_api_key, config.light_group),
                      data=json.dumps(value))
-    print(r.json())  # LOG
 
 
 def groups_get_request():
@@ -59,7 +64,7 @@ def lights_get_request(light):
 def get_lights_in_group():
     json_data = groups_get_request()
     lights_used = json_data['lights']
-    print("Lights used: {}".format(lights_used))  # LOG
+    logging.info("Lights in group: {}".format(lights_used))  # LOG
     return lights_used
 
 
@@ -72,16 +77,16 @@ def light_status(param):
         val = re.sub("\D", "", val)
         val = int(val)
         light_status.append(val)
-    print(light_status)  # LOG
+    logging.debug("Status of {}: {}".format(param, light_status))
     return light_status
 
 
 def check_for_changes(old_values):
-    print("These are the old values composed of the CT and BRI lists: {}".format(old_values))  # LOG
+    logging.debug("These are the old values composed of the CT and BRI lists: {}".format(old_values))  # LOG
     new_values = []
     new_values.insert(1, light_status('ct'))
     new_values.insert(2, light_status('bri'))
-    print("New values addition: {}".format(new_values))  # LOG
+    logging.debug("New values addition: {}".format(new_values))
     ct_changes = compare_lists(old_values[0], new_values[0])
     bri_changes = compare_lists(old_values[1], new_values[1])
     if ct_changes or bri_changes:
@@ -90,20 +95,20 @@ def check_for_changes(old_values):
     
     
 def compare_lists(old_values, new_values):
-    print("CL Old: {}".format(old_values))  # LOG
-    print("CL New: {}".format(new_values))  # LOG
+    logging.debug("Last saved CT values {}".format(old_values))
+    logging.debug("New CT values: {}".format(new_values))
     lights_in_group = get_lights_in_group()
     number_of_lights_in_group = len(lights_in_group)
-    print("Number of lights in group = {}".format(number_of_lights_in_group))  # LOG
+    logging.debug("Number of lights in group = {}".format(number_of_lights_in_group))
     i = 0
     for x in old_values:
-        print("Checking light {}".format(lights_in_group[i]))  # LOG
+        logging.debug("Checking light {}".format(lights_in_group[i]))
         diff = x - new_values[i]
-        print("diff = {}".format(diff))  # LOG
+        logging.debug("Difference between old and new values = {}".format(diff))  # LOG
         if diff > 6 or diff < -6:
-            print("Manual changes detected...")  # LOG
+            logging.info("Manual changes detected...")
             return True
-        print("No changes detected")  # LOG
+        logging.info("No changes detected")
         i += 1
     return False
 
@@ -114,14 +119,14 @@ def check_for_device(device_list):
     index = 0
     while num_of_devices > 0:
         device = device_list[index]
-        print("Checking for device {}".format(device))  # LOG
+        logging.info("Checking for device {}".format(device))
         attempts = 0
         while attempts < 2:
             output = subprocess.check_output(
                 ["sudo", "rfcomm", "connect", "0", device],
                 stderr=subprocess.STDOUT)
             decode = output.decode("utf-8")
-            print(decode)  # LOG
+            logging.info(decode)  # LOG
             away = re.search("Host", decode)
             if away:
                 attempts += 1
