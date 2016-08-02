@@ -63,21 +63,35 @@ def get_lights_in_group():
     return lights_used
 
 
-def light_status():
-    ct_status = []
+def light_status(param):
+    light_status = []
     lights_used = get_lights_in_group()
     for l in lights_used:
         data = str(lights_get_request(l))
-        ct = str(re.findall(r"'ct': [0-9]*", data))
-        ct = re.sub("\D", "", ct)
-        ct = int(ct)
-        ct_status.append(ct)
-    print(ct_status)  # LOG
-    return ct_status
+        val = str(re.findall(r"'{}': [0-9]*".format(param), data))
+        val = re.sub("\D", "", val)
+        val = int(val)
+        light_status.append(val)
+    print(light_status)  # LOG
+    return light_status
 
 
 def check_for_changes(old_values):
-    new_values = light_status()
+    print("These are the old values composed of the CT and BRI lists: {}".format(old_values))
+    new_values = []
+    new_values.insert(1, light_status('ct'))
+    new_values.insert(2, light_status('bri'))
+    print("New values addition: {}".format(new_values))
+    ct_changes = compare_lists(old_values[0], new_values[0])
+    bri_changes = compare_lists(old_values[1], new_values[1])
+    if ct_changes or bri_changes:
+        return True
+    return False
+    
+    
+def compare_lists(old_values, new_values):
+    print("CL Old: {}".format(old_values))
+    print("CL New: {}".format(new_values))
     lights_in_group = get_lights_in_group()
     number_of_lights_in_group = len(lights_in_group)
     print("Number of lights in group = {}".format(number_of_lights_in_group))  # LOG
@@ -92,9 +106,7 @@ def check_for_changes(old_values):
         print("No changes detected")  # LOG
         i += 1
     return False
-    
-    
-    
+
         
         
 def check_for_device(device_list):
@@ -168,13 +180,14 @@ def away_wait():
 def arrived_home():
     adjust_lights()
     print("Arrived home... sleeping")  # LOG
-    ct_settings = light_status()
+    ct_settings = light_status('ct')
+    bri_settings = light_status('bri')
     home_wait()
-    return ct_settings
+    return ct_settings, bri_settings
 
 
-def home(ct_settings):
-    if check_for_changes(ct_settings):
+def home(light_settings):
+    if check_for_changes(light_settings):
         print("Changes detected - do not update lights")  # LOG
     else:
         adjust_lights()
