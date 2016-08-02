@@ -77,11 +77,11 @@ def light_status(param):
 
 
 def check_for_changes(old_values):
-    print("These are the old values composed of the CT and BRI lists: {}".format(old_values))
+    print("These are the old values composed of the CT and BRI lists: {}".format(old_values))  # LOG
     new_values = []
     new_values.insert(1, light_status('ct'))
     new_values.insert(2, light_status('bri'))
-    print("New values addition: {}".format(new_values))
+    print("New values addition: {}".format(new_values))  # LOG
     ct_changes = compare_lists(old_values[0], new_values[0])
     bri_changes = compare_lists(old_values[1], new_values[1])
     if ct_changes or bri_changes:
@@ -90,16 +90,16 @@ def check_for_changes(old_values):
     
     
 def compare_lists(old_values, new_values):
-    print("CL Old: {}".format(old_values))
-    print("CL New: {}".format(new_values))
+    print("CL Old: {}".format(old_values))  # LOG
+    print("CL New: {}".format(new_values))  # LOG
     lights_in_group = get_lights_in_group()
     number_of_lights_in_group = len(lights_in_group)
     print("Number of lights in group = {}".format(number_of_lights_in_group))  # LOG
     i = 0
     for x in old_values:
-        print("Checking light {}".format(lights_in_group[i]))
+        print("Checking light {}".format(lights_in_group[i]))  # LOG
         diff = x - new_values[i]
-        print("diff = {}".format(diff))
+        print("diff = {}".format(diff))  # LOG
         if diff > 6 or diff < -6:
             print("Manual changes detected...")  # LOG
             return True
@@ -131,7 +131,7 @@ def check_for_device(device_list):
         index += 1
     return False
 
-
+    
 def sun_status():
     d = datetime.datetime.now()
     print("Current time: {}".format(d))
@@ -160,9 +160,14 @@ def sun_status():
     return temp
 
 
-def adjust_lights():
+def initial_adjust_lights():
     temp = sun_status()
     put_request({'on': True, 'bri': 254, 'ct': temp})
+
+
+def adjust_lights():
+    temp = sun_status()
+    put_request({'bri': 254, 'ct': temp})
 
 
 #def light_status():
@@ -178,7 +183,7 @@ def away_wait():
 
 #-----------------------------------------------------
 def arrived_home():
-    adjust_lights()
+    initial_adjust_lights()
     print("Arrived home... sleeping")  # LOG
     ct_settings = light_status('ct')
     bri_settings = light_status('bri')
