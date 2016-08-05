@@ -28,7 +28,7 @@ sudo systemctl enable rhythuem.service
 
 nano ~/rhytHUEm/config.py
 
--Add your Hue API key, device MAC address, longitude, latitude, and light group. Consult the Philips Hue developer pages to find this info if needed.
+-Add your Hue API key, device MAC address, longitude, latitude, and light group. Consult the Philips Hue developer pages to find this info if needed. TROUBLESHOOTING: If the app turns your lights off, but not back on, make sure your bluetooth is turned on. If that doesn't fix it, try manually pairing your device to the Pi. Once it's paired once, it doesn't need to stay paired - just needs to be able to attempt a pairing.
 
 
 - Install pysolar for tracking the sun
