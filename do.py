@@ -16,21 +16,6 @@ def bridge_ip():
 
 bridge_ip = bridge_ip()
 
-def check_for_bluetooth():
-    output = False
-    while output == False:
-        output = subprocess.check_output(['ps', '-A'])
-        output = output.decode("utf-8")
-        if 'bluetoothd' in output:
-            logging.info("Bluetooth is running")
-            put_request({'alert': 'select'})
-            sleep(1.5)  #  PAUSE FOR SLOW BRIDGE PERFORMANCE
-            put_request({'alert': 'none'})
-            return True
-        else:
-            logging.info("Bluetooth is not running... waiting")
-            return False
-
 
 def put_request(value):
     r = requests.put('http://{}/api/{}/groups/{}/action'.format(
