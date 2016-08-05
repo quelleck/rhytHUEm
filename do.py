@@ -7,14 +7,22 @@ from pysolar.solar import *
 import requests
 import json
 import logging
-    
+
 
 def bridge_ip():
     meethue_page = requests.get('https://www.meethue.com/api/nupnp').json()
     logging.info("Bridge IP: {}".format(meethue_page[0]['internalipaddress']))
     return meethue_page[0]['internalipaddress']
 
+
 bridge_ip = bridge_ip()
+
+
+def blink_ready():
+    put_request({'alert': 'select'})
+    sleep(1.5)  # PAUSE FOR SLOW BRIDGE PERFORMANCE
+    put_request({'alert': 'none'})
+    logging.info("Lights are ready")
 
 
 def put_request(value):
@@ -24,14 +32,14 @@ def put_request(value):
 
 
 def groups_get_request():
-    r = requests.get('http://{}/api/{}/groups/{}'.format(bridge_ip, config.hue_api_key, config.light_group))
+    r = requests.get('http://{}/api/{}/groups/{}'.format(
+        bridge_ip, config.hue_api_key, config.light_group))
     return r.json()
 
 
 def lights_get_request(light):
-    r = requests.get('http://{}/api/{}/lights/{}'.format(bridge_ip,
-                                                         config.hue_api_key,
-                                                         light))
+    r = requests.get('http://{}/api/{}/lights/{}'.format(
+        bridge_ip, config.hue_api_key, light))
     return r.json()
 
 
@@ -56,7 +64,9 @@ def light_status(param):
 
 
 def check_for_changes(old_values):
-    logging.debug("These are the old values composed of the CT and BRI lists: {}".format(old_values))  # LOG
+    logging.debug(
+        "These are the old values composed of the CT and BRI lists: {}".format(
+            old_values))  # LOG
     new_values = []
     new_values.insert(1, light_status('ct'))
     new_values.insert(2, light_status('bri'))
@@ -66,19 +76,21 @@ def check_for_changes(old_values):
     if ct_changes or bri_changes:
         return True
     return False
-    
-    
+
+
 def compare_lists(old_values, new_values):
     logging.debug("Last saved CT values {}".format(old_values))
     logging.debug("New CT values: {}".format(new_values))
     lights_in_group = get_lights_in_group()
     number_of_lights_in_group = len(lights_in_group)
-    logging.debug("Number of lights in group = {}".format(number_of_lights_in_group))
+    logging.debug("Number of lights in group = {}".format(
+        number_of_lights_in_group))
     i = 0
     for x in old_values:
         logging.debug("Checking light {}".format(lights_in_group[i]))
         diff = x - new_values[i]
-        logging.debug("Difference between old and new values = {}".format(diff))
+        logging.debug("Difference between old and new values = {}".format(
+            diff))
         if diff > 6 or diff < -6:
             logging.info("Manual changes detected...")
             return True
@@ -86,8 +98,7 @@ def compare_lists(old_values, new_values):
         i += 1
     return False
 
-        
-        
+
 def check_for_device(device_list):
     num_of_devices = len(device_list)
     index = 0
@@ -110,7 +121,7 @@ def check_for_device(device_list):
         index += 1
     return False
 
-    
+
 def sun_status():
     d = datetime.datetime.now()
     logging.debug("Current time: {}".format(d))
@@ -148,9 +159,8 @@ def adjust_lights():
     temp = sun_status()
     put_request({'bri': 254, 'ct': temp})
 
-
 #def light_status():
-    
+
 
 def home_wait():
     sleep(180)
