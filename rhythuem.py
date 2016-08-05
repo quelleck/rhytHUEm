@@ -28,5 +28,5 @@ def main():
             do.gone()
 
 if __name__ == "__main__":
-    logging.config.fileConfig("/home/pi/rhythm/config/logging.conf")
+    logging.config.fileConfig("/home/pi/rhythuem/config/logging.conf")
     main()
