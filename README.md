@@ -15,7 +15,7 @@ rhytHUEm is a customizable bluetooth proximity and color temperature (think f.lu
 git clone https://github.com/quelleck/rhytHUEm/
 - Copy rhythuem.service to /lib/systemd/system/
 
-sudo cp ~/rhythuem/rhythuem.sh /lib/systemd/system/
+sudo cp ~/rhytHUEm/rhythuem.service /lib/systemd/system/
 
 -Make sure rhythuem.service has the correct permissions
 
@@ -26,7 +26,7 @@ sudo systemctl daemon-reload
 sudo systemctl enable rhythuem.service
 - Open config/logging.py file 
 
-nano ~/rhythuem/config.py
+nano ~/rhytHUEm/config.py
 
 -Add your Hue API key, device MAC address, longitude, latitude, and light group. Consult the Philips Hue developer pages to find this info if needed.
 
@@ -37,13 +37,11 @@ nano ~/rhythuem/config.py
 sudo pip3 install pysolar
 
 
-
-
 You can use 
 
 sudo systemctl status rhythuem.service
 
-to check on the status.
+to check on the status, start, and stop the service.
 
 
 
