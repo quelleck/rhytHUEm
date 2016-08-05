@@ -9,7 +9,6 @@ import do
 
 
 def main():
-    do.check_for_bluetooth()
     device_away = True
     while True:
         user_detected = do.check_for_device(config.device_mac.split())
