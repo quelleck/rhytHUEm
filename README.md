@@ -1,12 +1,15 @@
 # rhytHUEm
 
-rhytHUEm is a customizable bluetooth proximity and color temperature (think f.lux) controller for Philips Hue lights built specifically for a Raspberry Pi.
+rhytHUEm is a customizable bluetooth proximity and color temperature (think f.lux) controller for Philips Hue lights built specifically for a Raspberry Pi. Written in Python 3.
 
 #Features
 - Bluetooth proximity detection to turn lights on/off. Use any bluetooth device, no pairing required (for most devices).
 - Changes the color temperature of your lights throughout the day based on your location and the altitude of the Sun over the horizon. Smart enough to not override your settings if you make a change with another app. #HealthyCircadianRhythms
 - Unlimited number of devices can be used for proximity detection.
 
+
+#HOW IT WORKS
+RhytHUEm sends a bluetooth pair request to your device(s) every 20 seconds when you're away. When your device is in range, no matter if the pair is successful, it will register you as "home". It then uses pysolar to determine the altitude of the sun in the sky based on the long/lat set in the config.py file and the time of day. It will send a PUT request to the light group you set in config.py with an updated color temperature. When you're registered as home, every three minutes it will 1) make sure your device is still in range 2) check to see if you've made any manual changes to the ct or bri values of your lights, and if not 3) update the color temperature of your lights. If you do make a manual change, RhytHUEm will stop making CT changes until you leave/come back. It does this every three minutes until you leave or bluetooth is turned off on your device. Once you're "away" RhytHUEm will turn off your lights and start sending pair requests every 20 seconds until you return.
 
 #Installing
 - Make sure you have your pi set to the correct time or else the color temperature of your lights will be off.
@@ -42,6 +45,8 @@ You can use
 sudo systemctl status rhythuem.service
 
 to check on the status, start, and stop the service.
+
+
 
 TROUBLESHOOTING: If the app turns your lights off, but not back on, make sure your bluetooth is turned on. If that doesn't fix it, try manually pairing your device to the Pi. Once it's paired once, it doesn't need to stay paired - just needs to be able to attempt a pairing.
 
