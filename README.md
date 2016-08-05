@@ -2,11 +2,11 @@
 
 rhytHUEm is a customizable bluetooth proximity and color temperature (think f.lux) controller for Philips Hue lights built specifically for a Raspberry Pi. 
 
-REQS
--Python 3
--Pysolar (installed with pip3)
--Bluetooth
--Internet connection
+REQUIREMENTS
+- Python 3
+- Pysolar (installed with pip3)
+- Bluetooth
+- Internet connection
 
 #Features
 - Bluetooth proximity detection to turn lights on/off. Use any bluetooth device, no pairing required (for most devices).
