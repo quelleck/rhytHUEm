@@ -1,10 +1,10 @@
 [Unit]
-Description=Rhythm
+Description=RhytHUEm
 After=multi-user.target
 
 [Service]
 Type=idle
-ExecStart=/usr/bin/python3 /home/pi/rhythm/rhythm.py
+ExecStart=/usr/bin/python3 /home/pi/rhythuem/rhythuem.py
 
 [Install]
 WantedBy=multi-user.target
