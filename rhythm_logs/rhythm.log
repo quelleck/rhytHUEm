@@ -1,0 +1,11 @@
+2016-08-04 22:35:07,751 [rhythm] [INFO] - Bluetooth is running
+2016-08-04 22:35:09,285 [rhythm] [DEBUG] - Checking for device A8:8E:24:5F:3B:23
+2016-08-04 22:35:10,230 [rhythm] [INFO] - Can't connect RFCOMM socket: Permission denied
+
+2016-08-04 22:35:10,231 [rhythm] [DEBUG] - Current time: 2016-08-04 22:35:10.231585
+2016-08-04 22:35:10,236 [rhythm] [DEBUG] - Sun is -19.239295727938064 degrees above/below the horizon
+2016-08-04 22:35:10,253 [rhythm] [INFO] - Arrived home... sleeping
+2016-08-04 22:35:10,271 [rhythm] [DEBUG] - Lights in group: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13']
+2016-08-04 22:35:10,456 [rhythm] [DEBUG] - Status of ct: [500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500]
+2016-08-04 22:35:10,470 [rhythm] [DEBUG] - Lights in group: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13']
+2016-08-04 22:35:10,674 [rhythm] [DEBUG] - Status of bri: [254, 254, 254, 254, 254, 254, 254, 254, 254, 254, 254, 254, 254]
