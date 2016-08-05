@@ -34,6 +34,7 @@ sudo chmod 644 /lib/systemd/system/rhythuem.service
 - Run this command to get the script to start when you boot the pi 
 
 sudo systemctl daemon-reload
+
 sudo systemctl enable rhythuem.service
 - Open config/logging.py file 
 
