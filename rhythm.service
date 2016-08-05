@@ -1,0 +1,10 @@
+[Unit]
+Description=Rhythm
+After=multi-user.target
+
+[Service]
+Type=idle
+ExecStart=/usr/bin/python3 /home/pi/rhythm/rhythm.py
+
+[Install]
+WantedBy=multi-user.target

@@ -7,22 +7,11 @@ from pysolar.solar import *
 import requests
 import json
 import logging
-
-
-logging.basicConfig(#filename='rhythm.log',
-                    level=logging.DEBUG,
-                    format='%(asctime)s %(message)s',
-                    datefmt='%m/%d/%Y %I:%M:%S %p')
-
-
-def initial_wait():
-    logging.warning('Sleeping 25 seconds for system boot')
-    sleep(25)
     
 
 def bridge_ip():
     meethue_page = requests.get('https://www.meethue.com/api/nupnp').json()
-    logging.debug("Bridge IP: {}".format(meethue_page[0]['internalipaddress']))
+    logging.info("Bridge IP: {}".format(meethue_page[0]['internalipaddress']))
     return meethue_page[0]['internalipaddress']
 
 bridge_ip = bridge_ip()
@@ -33,13 +22,13 @@ def check_for_bluetooth():
         output = subprocess.check_output(['ps', '-A'])
         output = output.decode("utf-8")
         if 'bluetoothd' in output:
-            logging.debug("Bluetooth is running")
+            logging.info("Bluetooth is running")
             put_request({'alert': 'select'})
             sleep(1.5)  #  PAUSE FOR SLOW BRIDGE PERFORMANCE
             put_request({'alert': 'none'})
             return True
         else:
-            logging.warning("Bluetooth is not running... waiting")  # LOG
+            logging.info("Bluetooth is not running... waiting")
             return False
 
 
@@ -64,7 +53,7 @@ def lights_get_request(light):
 def get_lights_in_group():
     json_data = groups_get_request()
     lights_used = json_data['lights']
-    logging.info("Lights in group: {}".format(lights_used))  # LOG
+    logging.debug("Lights in group: {}".format(lights_used))
     return lights_used
 
 
@@ -104,7 +93,7 @@ def compare_lists(old_values, new_values):
     for x in old_values:
         logging.debug("Checking light {}".format(lights_in_group[i]))
         diff = x - new_values[i]
-        logging.debug("Difference between old and new values = {}".format(diff))  # LOG
+        logging.debug("Difference between old and new values = {}".format(diff))
         if diff > 6 or diff < -6:
             logging.info("Manual changes detected...")
             return True
@@ -119,14 +108,14 @@ def check_for_device(device_list):
     index = 0
     while num_of_devices > 0:
         device = device_list[index]
-        logging.info("Checking for device {}".format(device))
+        logging.debug("Checking for device {}".format(device))
         attempts = 0
         while attempts < 2:
             output = subprocess.check_output(
                 ["sudo", "rfcomm", "connect", "0", device],
                 stderr=subprocess.STDOUT)
             decode = output.decode("utf-8")
-            logging.info(decode)  # LOG
+            logging.info(decode)
             away = re.search("Host", decode)
             if away:
                 attempts += 1
@@ -139,9 +128,9 @@ def check_for_device(device_list):
     
 def sun_status():
     d = datetime.datetime.now()
-    print("Current time: {}".format(d))
+    logging.debug("Current time: {}".format(d))
     altitude = get_altitude(config.lon, config.lat, d)
-    print("Sun is {} degrees above/below the horizon".format(altitude))
+    logging.debug("Sun is {} degrees above/below the horizon".format(altitude))
     if altitude <= -18:
         temp = 500
     elif altitude >= -18 and altitude < -5:
@@ -179,17 +168,17 @@ def adjust_lights():
     
 
 def home_wait():
-    sleep(5)  #  REMINDER TO CHANGE THIS BACK
+    sleep(180)
 
 
 def away_wait():
-    sleep(5)  #  REMINDER TO CHANGE THIS BACK
+    sleep(20)
 
 
 #-----------------------------------------------------
 def arrived_home():
     initial_adjust_lights()
-    print("Arrived home... sleeping")  # LOG
+    logging.info("Arrived home... sleeping")
     ct_settings = light_status('ct')
     bri_settings = light_status('bri')
     home_wait()
@@ -198,19 +187,19 @@ def arrived_home():
 
 def home(light_settings):
     if check_for_changes(light_settings):
-        print("Changes detected - do not update lights")  # LOG
+        logging.debug("Changes detected - do not update lights")
     else:
         adjust_lights()
-    print("Home... sleeping")  # LOG
+    logging.info("Home... sleeping")
     home_wait()
 
 
 def left():
     put_request({'on': False})
-    print("Left... sleeping")  # LOG
+    logging.info("Left... sleeping")
     away_wait()
 
 
 def gone():
-    print("Gone... sleeping")  # LOG
+    logging.info("Gone... sleeping")
     away_wait()
