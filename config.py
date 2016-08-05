@@ -1,5 +1,9 @@
-hue_api_key = '155119e41f09a34f2651b60c3f5e6cd7'
-device_mac = 'A8:8E:24:5F:3B:23'
-lon = 41.253025
-lat = -95.929204
+hue_api_key = ''
+#You can add multiple devices. If you do, put them
+#in the same set of single quotes with a space between.
+#Example: 'AA:BB:CC:DD:EE:FF AB:BC:CD:DE:EF:FG'
+device_mac = ''
+lon = 41.2
+lat = -96
+#Default 0 is all lights
 light_group = '0'
