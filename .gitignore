@@ -83,6 +83,3 @@ ENV/
 
 # Rope project settings
 .ropeproject
-
-# Log files
-*.log
