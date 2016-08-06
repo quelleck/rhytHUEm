@@ -92,7 +92,7 @@ def compare_lists(old_values, new_values):
         logging.debug("Difference between old and new values = {}".format(
             diff))
         if diff > 6 or diff < -6:
-            logging.info("Manual changes detected...".format(x))
+            logging.info("Manual changes detected on light {}...".format(x))
             return True
         i += 1
         logging.debug("No changes detected")
