@@ -79,8 +79,8 @@ def check_for_changes(old_values):
 
 
 def compare_lists(old_values, new_values):
-    logging.debug("Last saved CT values {}".format(old_values))
-    logging.debug("New CT values: {}".format(new_values))
+    logging.debug("Last saved values {}".format(old_values))
+    logging.debug("New values: {}".format(new_values))
     lights_in_group = get_lights_in_group()
     number_of_lights_in_group = len(lights_in_group)
     logging.debug("Number of lights in group = {}".format(
@@ -92,10 +92,10 @@ def compare_lists(old_values, new_values):
         logging.debug("Difference between old and new values = {}".format(
             diff))
         if diff > 6 or diff < -6:
-            logging.info("Manual changes detected...")
+            logging.info("Manual changes detected...".format(x))
             return True
-        logging.info("No changes detected")
         i += 1
+        logging.debug("No changes detected")
     return False
 
 
@@ -104,14 +104,14 @@ def check_for_device(device_list):
     index = 0
     while num_of_devices > 0:
         device = device_list[index]
-        logging.debug("Checking for device {}".format(device))
+        logging.info("Checking for device {}".format(device))
         attempts = 0
         while attempts < 2:
             output = subprocess.check_output(
                 ["sudo", "rfcomm", "connect", "0", device],
                 stderr=subprocess.STDOUT)
             decode = output.decode("utf-8")
-            logging.info(decode)
+            logging.debug(decode)
             away = re.search("Host", decode)
             if away:
                 attempts += 1
