@@ -1,5 +1,5 @@
 #! /usr/bin/env python3
-# Rhythm
+# RhytHUEm
 # Ethan Seyl 2016
 
 import config
