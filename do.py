@@ -11,7 +11,7 @@ import logging
 
 def bridge_ip():
     meethue_page = requests.get('https://www.meethue.com/api/nupnp').json()
-    logging.info("Bridge IP: {}".format(meethue_page[0]['internalipaddress']))
+    logging.info("Bridge IP: {}".format(meethue_page))
     return meethue_page[0]['internalipaddress']
 
 
@@ -158,8 +158,6 @@ def initial_adjust_lights():
 def adjust_lights():
     temp = sun_status()
     put_request({'bri': 254, 'ct': temp})
-
-#def light_status():
 
 
 def home_wait():
