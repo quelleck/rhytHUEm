@@ -36,7 +36,7 @@ sudo chmod 644 /lib/systemd/system/rhythuem.service
 sudo systemctl daemon-reload
 
 sudo systemctl enable rhythuem.service
-- Open config/logging.py file 
+- Open config.py file 
 
 nano ~/rhytHUEm/config.py
 
