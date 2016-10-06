@@ -108,7 +108,7 @@ def check_for_device(device_list):
         attempts = 0
         while attempts < 2:
             output = subprocess.check_output(
-                ["sudo", "rfcomm", "connect", "0", device],
+                ["sudo", "rfcomm", "connect", "0", device, "10"],
                 stderr=subprocess.STDOUT)
             decode = output.decode("utf-8")
             logging.debug(decode)
@@ -119,7 +119,6 @@ def check_for_device(device_list):
                 return True
         num_of_devices -= 1
         index += 1
-    return False
 
 
 def sun_status():
@@ -171,9 +170,9 @@ def away_wait():
 #-----------------------------------------------------
 def arrived_home():
     initial_adjust_lights()
-    logging.info("Arrived home... sleeping")
     ct_settings = light_status('ct')
     bri_settings = light_status('bri')
+    logging.info("Arrived home... sleeping")
     home_wait()
     return ct_settings, bri_settings
 
