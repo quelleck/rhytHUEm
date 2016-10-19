@@ -1,4 +1,4 @@
-import config
+import configparser
 import subprocess
 import re
 from time import sleep
@@ -8,7 +8,9 @@ import requests
 import json
 import logging
 
-
+config = configparser.ConfigParser()
+config.read('/home/pi/rhytHUEm/config/rhythuem.ini')
+    
 def bridge_ip():
     meethue_page = requests.get('https://www.meethue.com/api/nupnp').json()
     logging.info("Bridge IP: {}".format(meethue_page))
@@ -16,6 +18,23 @@ def bridge_ip():
 
 
 bridge_ip = bridge_ip()
+
+
+def get_lights_in_group():
+    json_data = groups_get_request()
+    lights_used = json_data['lights']
+    logging.debug("Lights in group: {}".format(lights_used))
+    return lights_used
+
+
+def groups_get_request():
+    r = requests.get('http://{}/api/{}/groups/{}'.format(
+        bridge_ip, config['DEFAULT']['HueApiKey'], config['DEFAULT']['LightGroup']))
+    return r.json()
+
+
+lights_used = get_lights_in_group()
+number_of_lights_in_group = len(lights_used)
 
 
 def blink_ready():
@@ -27,32 +46,18 @@ def blink_ready():
 
 def put_request(value):
     r = requests.put('http://{}/api/{}/groups/{}/action'.format(
-        bridge_ip, config.hue_api_key, config.light_group),
+        bridge_ip, config['DEFAULT']['HueApiKey'], config['DEFAULT']['LightGroup']),
                      data=json.dumps(value))
-
-
-def groups_get_request():
-    r = requests.get('http://{}/api/{}/groups/{}'.format(
-        bridge_ip, config.hue_api_key, config.light_group))
-    return r.json()
 
 
 def lights_get_request(light):
     r = requests.get('http://{}/api/{}/lights/{}'.format(
-        bridge_ip, config.hue_api_key, light))
+        bridge_ip, config['DEFAULT']['HueApiKey'], light))
     return r.json()
-
-
-def get_lights_in_group():
-    json_data = groups_get_request()
-    lights_used = json_data['lights']
-    logging.debug("Lights in group: {}".format(lights_used))
-    return lights_used
 
 
 def light_status(param):
     light_status = []
-    lights_used = get_lights_in_group()
     for l in lights_used:
         data = str(lights_get_request(l))
         val = str(re.findall(r"'{}': [0-9]*".format(param), data))
@@ -71,6 +76,10 @@ def check_for_changes(old_values):
     new_values.insert(1, light_status('ct'))
     new_values.insert(2, light_status('bri'))
     logging.debug("New values addition: {}".format(new_values))
+    print("New values at index 0 = {}".format(new_values[0]))
+    print("Old values at index 0 = {}".format(old_values[0]))
+    print("New values at index 1 = {}".format(new_values[1]))
+    print("Old values at index 1 = {}".format(old_values[1]))
     ct_changes = compare_lists(old_values[0], new_values[0])
     bri_changes = compare_lists(old_values[1], new_values[1])
     if ct_changes or bri_changes:
@@ -81,17 +90,16 @@ def check_for_changes(old_values):
 def compare_lists(old_values, new_values):
     logging.debug("Last saved values {}".format(old_values))
     logging.debug("New values: {}".format(new_values))
-    lights_in_group = get_lights_in_group()
-    number_of_lights_in_group = len(lights_in_group)
     logging.debug("Number of lights in group = {}".format(
         number_of_lights_in_group))
     i = 0
     for x in old_values:
-        logging.debug("Checking light {}".format(lights_in_group[i]))
+        logging.debug("Checking light {}".format(lights_used[i]))
         diff = x - new_values[i]
         logging.debug("Difference between old and new values = {}".format(
             diff))
         if diff > 6 or diff < -6:
+            logging.info("Difference in light values: {}".format(diff))
             logging.info("Manual changes detected on light {}...".format(x))
             return True
         i += 1
@@ -113,18 +121,20 @@ def check_for_device(device_list):
             decode = output.decode("utf-8")
             logging.debug(decode)
             away = re.search("Host", decode)
+            logging.debug("Away status: {}".format(away))
             if away:
                 attempts += 1
             else:
                 return True
         num_of_devices -= 1
         index += 1
+    return False
 
 
 def sun_status():
     d = datetime.datetime.now()
     logging.debug("Current time: {}".format(d))
-    altitude = get_altitude(config.lon, config.lat, d)
+    altitude = get_altitude(float(config['DEFAULT']['Lon']), float(config['DEFAULT']['Lat']), d)
     logging.debug("Sun is {} degrees above/below the horizon".format(altitude))
     if altitude <= -18:
         temp = 500
@@ -152,19 +162,26 @@ def sun_status():
 def initial_adjust_lights():
     temp = sun_status()
     put_request({'on': True, 'bri': 254, 'ct': temp})
+    sleep(12) # Wait for heartbeat
 
 
 def adjust_lights():
     temp = sun_status()
     put_request({'bri': 254, 'ct': temp})
+    sleep(12) # Wait for heartbeat
 
 
 def home_wait():
-    sleep(180)
+    sleep(120)
 
 
 def away_wait():
     sleep(20)
+
+
+def wemo(on_off):
+    requests.post('https://maker.ifttt.com/trigger/{}/with/key/{}'.format(
+        on_off, config['WEMO']['IFTTTApiKey']))
 
 
 #-----------------------------------------------------
@@ -172,6 +189,7 @@ def arrived_home():
     initial_adjust_lights()
     ct_settings = light_status('ct')
     bri_settings = light_status('bri')
+    wemo(config['WEMO']['Off'])
     logging.info("Arrived home... sleeping")
     home_wait()
     return ct_settings, bri_settings
@@ -188,6 +206,7 @@ def home(light_settings):
 
 def left():
     put_request({'on': False})
+    wemo(config['WEMO']['On'])
     logging.info("Left... sleeping")
     away_wait()
 
