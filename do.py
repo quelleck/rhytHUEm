@@ -10,7 +10,7 @@ import logging
 
 config = configparser.ConfigParser()
 config.read('/home/pi/rhytHUEm/config/rhythuem.ini')
-    
+
 def bridge_ip():
     meethue_page = requests.get('https://www.meethue.com/api/nupnp').json()
     logging.info("Bridge IP: {}".format(meethue_page))
@@ -132,30 +132,33 @@ def check_for_device(device_list):
 
 
 def sun_status():
-    d = datetime.datetime.now()
-    logging.debug("Current time: {}".format(d))
-    altitude = get_altitude(float(config['DEFAULT']['Lon']), float(config['DEFAULT']['Lat']), d)
-    logging.debug("Sun is {} degrees above/below the horizon".format(altitude))
-    if altitude <= -18:
-        temp = 500
-    elif altitude >= -18 and altitude < -5:
-        temp = 500
-    elif altitude >= -5 and altitude < -2:
-        temp = 320
-    elif altitude >= -2 and altitude < 0:
-        temp = 300
-    elif altitude >= 0 and altitude < 5:
-        temp = 280
-    elif altitude >= 5 and altitude < 10:
-        temp = 270
-    elif altitude >= 10 and altitude < 20:
-        temp = 254
-    elif altitude >= 20 and altitude < 30:
-        temp = 245
-    elif altitude >= 30 and altitude < 40:
-        temp = 234
-    elif altitude >= 40 and altitude <= 90:
-        temp = 153
+    if config['DEFAULT']['SunAdjust']:
+        d = datetime.datetime.now()
+        logging.debug("Current time: {}".format(d))
+        altitude = get_altitude(float(config['DEFAULT']['Lon']), float(config['DEFAULT']['Lat']), d)
+        logging.debug("Sun is {} degrees above/below the horizon".format(altitude))
+        if altitude <= -18:
+            temp = 500
+        elif altitude >= -18 and altitude < -5:
+            temp = 500
+        elif altitude >= -5 and altitude < -2:
+            temp = 320
+        elif altitude >= -2 and altitude < 0:
+            temp = 300
+        elif altitude >= 0 and altitude < 5:
+            temp = 280
+        elif altitude >= 5 and altitude < 10:
+            temp = 270
+        elif altitude >= 10 and altitude < 20:
+            temp = 254
+        elif altitude >= 20 and altitude < 30:
+            temp = 245
+        elif altitude >= 30 and altitude < 40:
+            temp = 234
+        elif altitude >= 40 and altitude <= 90:
+            temp = 153
+    else:
+        temp = 231
     return temp
 
 
