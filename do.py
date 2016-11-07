@@ -132,7 +132,7 @@ def check_for_device(device_list):
 
 
 def sun_status():
-    if config['DEFAULT']['SunAdjust']:
+    if config['DEFAULT']['SunAdjust'] is 'True':
         d = datetime.datetime.now()
         logging.debug("Current time: {}".format(d))
         altitude = get_altitude(float(config['DEFAULT']['Lon']), float(config['DEFAULT']['Lat']), d)
