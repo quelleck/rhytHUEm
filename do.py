@@ -108,6 +108,7 @@ def compare_lists(old_values, new_values):
 
 
 def check_for_device(device_list):
+    num_devices = len(device_list)
     for device in device_list:
         output = subprocess.check_output(
             ['sudo', 'hcitool', 'name', device],
@@ -116,7 +117,11 @@ def check_for_device(device_list):
         logging.debug("[do][check_for_device] Output: {}".format(decoded_output))
         if output:
             return True
-        return False
+        elif not output and num_devices > 1:
+            num_devices -= 1
+            print("Checking next device")
+        else:
+            return False
 
 
 def sun_status():
