@@ -108,27 +108,15 @@ def compare_lists(old_values, new_values):
 
 
 def check_for_device(device_list):
-    num_of_devices = len(device_list)
-    index = 0
-    while num_of_devices > 0:
-        device = device_list[index]
-        logging.info("Checking for device {}".format(device))
-        attempts = 0
-        while attempts < 2:
-            output = subprocess.check_output(
-                ["sudo", "rfcomm", "connect", "0", device, "10"],
-                stderr=subprocess.STDOUT)
-            decode = output.decode("utf-8")
-            logging.debug(decode)
-            away = re.search("Host", decode)
-            logging.debug("Away status: {}".format(away))
-            if away:
-                attempts += 1
-            else:
-                return True
-        num_of_devices -= 1
-        index += 1
-    return False
+    for device in device_list:
+        output = subprocess.check_output(
+            ['sudo', 'hcitool', 'name', device],
+            stderr=subprocess.STDOUT)
+        decoded_output = output.decode('utf-8')
+        logging.debug("[do][check_for_device] Output: {}".format(decoded_output))
+        if output:
+            return True
+        return False
 
 
 def sun_status():
