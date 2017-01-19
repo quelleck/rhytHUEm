@@ -1,0 +1,26 @@
+[DEFAULT]
+HueApiKey =
+DeviceMac =
+Lon =
+Lat =
+LightGroup = 0
+SunAdjust = True
+
+[WEMO]
+On =
+Off =
+IFTTTApiKey =
+
+#EXAMPLE VALUES
+#[DEFAULT]
+#HueApiKey = MyHueBridgeUserKey
+#DeviceMac = AA:BB:CC:DD:EE:FF
+#Lon = 45.01234
+#Lat = 90.54321
+#LightGroup = 0 
+#SunAdjust = True
+
+#[WEMO]
+#On = my_ifttt_applet
+#Off = my_ifttt_applet
+#IFTTTApiKey = MyIFTTTApiKey

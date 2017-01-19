@@ -1,0 +1,11 @@
+[Unit]
+Description=rhytHUEm
+After=multi-user.target
+
+[Service]
+Type=idle
+#EDIT THE PATH TO YOUR RHYTHUEM DIRECTORY
+ExecStart=/usr/bin/python3 /PATH/TO/rhytHUEm/rhythuem.py
+
+[Install]
+WantedBy=multi-user.target

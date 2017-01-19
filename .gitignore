@@ -83,3 +83,5 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+.service
