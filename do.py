@@ -176,11 +176,11 @@ def away_wait():
 
 def wemo(on_off):
 	if on_off:
-		logging.debug("[do][wemo] Wemo recipie exists")
+		logging.debug("[do][wemo] Wemo recipe exists")
 		requests.post('https://maker.ifttt.com/trigger/{}/with/key/{}'.format(
 			on_off, config['WEMO']['IFTTTApiKey']))
 	else:
-		logging.debug("[do][wemo] No Wemo recipie in .ini")
+		logging.debug("[do][wemo] No Wemo recipe in .ini")
 
 
 #-----------------------------------------------------
