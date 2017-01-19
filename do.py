@@ -16,7 +16,7 @@ config.read('{}/config/rhythuem.ini'.format(dir_path))
 
 def bridge_ip():
     meethue_page = requests.get('https://www.meethue.com/api/nupnp').json()
-    logging.info("Bridge IP: {}".format(meethue_page))
+    logging.info("[do][bridge_ip] Bridge IP: {}".format(meethue_page))
     return meethue_page[0]['internalipaddress']
 
 
@@ -26,7 +26,7 @@ bridge_ip = bridge_ip()
 def get_lights_in_group():
     json_data = groups_get_request()
     lights_used = json_data['lights']
-    logging.debug("Lights in group: {}".format(lights_used))
+    logging.debug("[do][get_lights_in_group] Lights in group: {}".format(lights_used))
     return lights_used
 
 
@@ -44,7 +44,7 @@ def blink_ready():
     put_request({'alert': 'select'})
     sleep(1.5)  # PAUSE FOR SLOW BRIDGE PERFORMANCE
     put_request({'alert': 'none'})
-    logging.info("Lights are ready")
+    logging.info("[do][blink_ready] Lights are ready")
 
 
 def put_request(value):
@@ -67,22 +67,18 @@ def light_status(param):
         val = re.sub("\D", "", val)
         val = int(val)
         light_status.append(val)
-    logging.debug("Status of {}: {}".format(param, light_status))
+    logging.debug("[do][light_status] Status of {}: {}".format(param, light_status))
     return light_status
 
 
 def check_for_changes(old_values):
     logging.debug(
-        "These are the old values composed of the CT and BRI lists: {}".format(
+        "[do][check_for_changes] These are the old values composed of the CT and BRI lists: {}".format(
             old_values))  # LOG
     new_values = []
     new_values.insert(1, light_status('ct'))
     new_values.insert(2, light_status('bri'))
-    logging.debug("New values addition: {}".format(new_values))
-    print("New values at index 0 = {}".format(new_values[0]))
-    print("Old values at index 0 = {}".format(old_values[0]))
-    print("New values at index 1 = {}".format(new_values[1]))
-    print("Old values at index 1 = {}".format(old_values[1]))
+    logging.debug("[do][check_for_changes] New values addition: {}".format(new_values))
     ct_changes = compare_lists(old_values[0], new_values[0])
     bri_changes = compare_lists(old_values[1], new_values[1])
     if ct_changes or bri_changes:
@@ -91,19 +87,19 @@ def check_for_changes(old_values):
 
 
 def compare_lists(old_values, new_values):
-    logging.debug("Last saved values {}".format(old_values))
-    logging.debug("New values: {}".format(new_values))
-    logging.debug("Number of lights in group = {}".format(
+    logging.debug("[do][compare_lists] Last saved values {}".format(old_values))
+    logging.debug("[do][compare_lists] New values: {}".format(new_values))
+    logging.debug("[do][compare_lists] Number of lights in group = {}".format(
         number_of_lights_in_group))
     i = 0
     for x in old_values:
-        logging.debug("Checking light {}".format(lights_used[i]))
+        logging.debug("[do][compare_lists] Checking light {}".format(lights_used[i]))
         diff = x - new_values[i]
-        logging.debug("Difference between old and new values = {}".format(
+        logging.debug("[do][compare_lists] Difference between old and new values = {}".format(
             diff))
         if diff > 6 or diff < -6:
-            logging.info("Difference in light values: {}".format(diff))
-            logging.info("Manual changes detected on light {}...".format(x))
+            logging.info("[do][compare_lists] Difference in light values: {}".format(diff))
+            logging.info("[do][compare_lists] Manual changes detected on light {}...".format(x))
             return True
         i += 1
         logging.debug("No changes detected")
@@ -130,9 +126,9 @@ def check_for_device(device_list):
 def sun_status():
     if config['DEFAULT']['SunAdjust'] is 'True':
         d = datetime.datetime.now()
-        logging.debug("Current time: {}".format(d))
+        logging.debug("[do][sun_status] Current time: {}".format(d))
         altitude = get_altitude(float(config['DEFAULT']['Lon']), float(config['DEFAULT']['Lat']), d)
-        logging.debug("Sun is {} degrees above/below the horizon".format(altitude))
+        logging.debug("[do][sun_status] Sun is {} degrees above/below the horizon".format(altitude))
         if altitude <= -18:
             temp = 500
         elif altitude >= -18 and altitude < -5:
@@ -179,8 +175,12 @@ def away_wait():
 
 
 def wemo(on_off):
-    requests.post('https://maker.ifttt.com/trigger/{}/with/key/{}'.format(
-        on_off, config['WEMO']['IFTTTApiKey']))
+	if on_off:
+		logging.debug("[do][wemo] Wemo recipie exists")
+		requests.post('https://maker.ifttt.com/trigger/{}/with/key/{}'.format(
+			on_off, config['WEMO']['IFTTTApiKey']))
+	else:
+		logging.debug("[do][wemo] No Wemo recipie in .ini")
 
 
 #-----------------------------------------------------
@@ -189,27 +189,27 @@ def arrived_home():
     ct_settings = light_status('ct')
     bri_settings = light_status('bri')
     wemo(config['WEMO']['Off'])
-    logging.info("Arrived home... sleeping")
+    logging.info("[do][arrived_home] Arrived home... sleeping")
     home_wait()
     return ct_settings, bri_settings
 
 
 def home(light_settings):
     if check_for_changes(light_settings):
-        logging.debug("Changes detected - do not update lights")
+        logging.debug("[do][home] Changes detected - do not update lights")
     else:
         adjust_lights()
-    logging.info("Home... sleeping")
+    logging.info("[do][home] Home... sleeping")
     home_wait()
 
 
 def left():
     put_request({'on': False})
     wemo(config['WEMO']['On'])
-    logging.info("Left... sleeping")
+    logging.info("[do][left] Left... sleeping")
     away_wait()
 
 
 def gone():
-    logging.info("Gone... sleeping")
+    logging.info("[do][gone] Gone... sleeping")
     away_wait()
