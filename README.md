@@ -40,7 +40,7 @@ sudo systemctl enable rhythuem.service
 
 nano ~/rhytHUEm/config/rhythuem.ini.TEMPLATE
 
--Add your Hue API key, device MAC address, longitude, latitude, and light group. Sun tracking can be turned on and off with True and False. If you'd like to control a wemo switch with IFTTT, fill out the recipe names and API key or else leave them blank. Consult the Philips Hue developer pages to find this info if needed. Save it without the .TEMPLATE extension.
+-Add your Hue API key, device MAC address, longitude, latitude, and light group. Sun tracking can be turned on and off with true/yes or leave it blank. If you'd like to control a wemo switch with IFTTT, fill out the recipe names and API key or else leave them blank. Consult the Philips Hue developer pages to find this info if needed. Save it without the .TEMPLATE extension.
 
 
 - Install pysolar for tracking the sun

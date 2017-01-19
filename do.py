@@ -99,7 +99,7 @@ def compare_lists(old_values, new_values):
             diff))
         if diff > 6 or diff < -6:
             logging.info("[do][compare_lists] Difference in light values: {}".format(diff))
-            logging.info("[do][compare_lists] Manual changes detected on light {}...".format(x))
+            logging.info("[do][compare_lists] Manual changes detected on light {}...".format(lights_used[i]))
             return True
         i += 1
         logging.debug("[do][compare_lists] No changes detected")
@@ -124,7 +124,7 @@ def check_for_device(device_list):
 
 
 def sun_status():
-    if config['DEFAULT']['SunAdjust'] is 'True':
+    if config['DEFAULT']['SunAdjust']:
         d = datetime.datetime.now()
         logging.debug("[do][sun_status] Current time: {}".format(d))
         altitude = get_altitude(float(config['DEFAULT']['Lon']), float(config['DEFAULT']['Lat']), d)
@@ -150,6 +150,7 @@ def sun_status():
         elif altitude >= 40 and altitude <= 90:
             temp = 153
     else:
+        logging.debug("[do][sun_status] Sun tracking off")
         temp = 231
     return temp
 
