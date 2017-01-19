@@ -102,7 +102,7 @@ def compare_lists(old_values, new_values):
             logging.info("[do][compare_lists] Manual changes detected on light {}...".format(x))
             return True
         i += 1
-        logging.debug("No changes detected")
+        logging.debug("[do][compare_lists] No changes detected")
     return False
 
 
