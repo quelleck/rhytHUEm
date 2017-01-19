@@ -24,7 +24,7 @@ Key Items: RhytHUEm only scans for your device every 3 minutes after it turns yo
 - Clone the repo to your home directory 
 
 git clone https://github.com/quelleck/rhytHUEm/
-- Copy rhythuem.service to /lib/systemd/system/ (May need to alter path if you didn't install in home dir)
+- Edit the rhythuem.service.TEMPLATE file so it has the correct path of your rhytHUEm directory, then save it without the .TEMPLATE extension. Copy rhythuem.service to /lib/systemd/system/ (May need to alter path if you didn't install in home dir)
 
 sudo cp ~/rhytHUEm/rhythuem.service /lib/systemd/system/
 
@@ -36,11 +36,11 @@ sudo chmod 644 /lib/systemd/system/rhythuem.service
 sudo systemctl daemon-reload
 
 sudo systemctl enable rhythuem.service
-- Open config.py file 
+- Open rhythuem.ini.TEMPLATE file 
 
-nano ~/rhytHUEm/config.py
+nano ~/rhytHUEm/config/rhythuem.ini.TEMPLATE
 
--Add your Hue API key, device MAC address, longitude, latitude, and light group. Consult the Philips Hue developer pages to find this info if needed.
+-Add your Hue API key, device MAC address, longitude, latitude, and light group. Consult the Philips Hue developer pages to find this info if needed. Save it without the .TEMPLATE extension.
 
 
 - Install pysolar for tracking the sun
