@@ -6,9 +6,11 @@ import configparser
 import logging
 import logging.config
 import do
+import os
 
+dir_path = os.path.dirname(os.path.realpath(__file__))
 config = configparser.ConfigParser()
-config.read('/home/pi/rhytHUEm/config/rhythuem.ini')
+config.read('{}/config/rhythuem.ini'.format(dir_path))
 device_list = (config['DEFAULT']['DeviceMac']).split()
 
 def main():
@@ -32,5 +34,5 @@ def main():
 
 
 if __name__ == "__main__":
-    logging.config.fileConfig('/home/pi/rhytHUEm/config/logging.conf')
+    logging.config.fileConfig('{}/config/logging.conf'.format(dir_path))
     main()

@@ -1,6 +1,7 @@
 import configparser
 import subprocess
 import re
+import os
 from time import sleep
 import datetime
 from pysolar.solar import *
@@ -8,8 +9,10 @@ import requests
 import json
 import logging
 
+dir_path = os.path.dirname(os.path.realpath(__file__))
+
 config = configparser.ConfigParser()
-config.read('/home/pi/rhytHUEm/config/rhythuem.ini')
+config.read('{}/config/rhythuem.ini'.format(dir_path))
 
 def bridge_ip():
     meethue_page = requests.get('https://www.meethue.com/api/nupnp').json()
