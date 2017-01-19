@@ -59,6 +59,6 @@ to check on the status, start, and stop the service.
 The best way by far is to do this through the bluetooth "Add Device" GUI. Depending on what type of device you have, RhytHUEm WILL NOT be able to ping until it's paired. Don't worry if the Pi says there are no available features for your device - the pair just has to be successful once. If you have an iPhone, you need to open the Bluetooth settings screen in the Settings app.
 
 # Optional
-The rhythuem_check.sh script checks for the service and starts it if it's stopped. I have start as a cron job every minutes as a saftey net in case of a crash.
+The rhythuem_check.sh script checks for the service and starts it if it's stopped. I have it set up as a cron job that runs every hour as a saftey net in case of a crash.
 
 contact info: ethan.seyl@gmail.com
